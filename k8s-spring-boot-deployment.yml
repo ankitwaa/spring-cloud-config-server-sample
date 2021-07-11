@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-cloud-config-server-sample
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spring-cloud-config-server-sample
+  template:
+    metadata:
+      labels:
+        app: spring-cloud-config-server-sample
+    spec:
+      containers:
+        - name: springboot
+          image: 192.168.0.105:8081/local-docker/spring-cloud-config-server-sample:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+      imagePullSecrets:
+        - name: myregistrykey
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-cloud-config-server-sample
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    app: spring-cloud-config-server-sample
